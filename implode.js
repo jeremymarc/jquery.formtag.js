@@ -45,17 +45,16 @@
        * Store new form element
        * element: jQuery Selector
        * label: the display name of the form element
-       * values: values displayed once the element is selected
        *
        * Support only Select
        */
-      function addFormElement(element, label, values) {
+      function addFormElement(element, label) {
         if ("undefined" === typeof(multiple)) {
           multiple = false;
         }
 
         console.log('Adding Form Element ' + label);
-        elements.push({element: element, label: label, values: values});
+        elements.push({element: element, label: label});
       }
 
       function getFormElement(index) {
@@ -70,7 +69,14 @@
           html = '',
           $li;
 
-        $(element.values).each(function(i, el) {
+        var values = [];
+
+        //todo: handle other form elements
+        $(element.element).find('option').each(function(i, option) {
+          values.push([option.innerHTML, option.value]);
+        });
+
+        $(values).each(function(i, el) {
           $li = $('<li></li>').html(el[0]);
           $li.attr('data-value', el[1]);
 
@@ -139,15 +145,10 @@
 
       function parseSelect(element) {
         var $label = getLabel(element),
-          $options = element.find('option'),
-          values = []
+          $options = element.find('option')
           ;
 
-          $options.each(function(i, option) {
-            values.push([option.innerHTML, option.value]);
-          });
-
-          addFormElement($(element), $label.text(), values);
+          addFormElement($(element), $label.text());
       }
 
 
