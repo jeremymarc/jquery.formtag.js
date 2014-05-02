@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="author" content="Jeremy Marc">
   <title>Implode Form jQuery plugin</title>
-  <link rel="stylesheet" href="../style/implode.css">
+  <link rel="stylesheet" href="../implode.css">
 
   <!--[if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -13,10 +13,22 @@
 <body>
   <form>
     <div class="form-row">
-      <label for="select">Select</label>
-      <select id="select">
+      <label for="select1">Select1</label>
+      <select id="select1">
+        <option value="">Please Select</option>
         <option value="1">Option 1</option>
         <option value="2">Option 2</option>
+        <option value="3">Option 3</option>
+        <option value="4">Option 4</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <label for="select2">Select2</label>
+      <select id="select2">
+        <option value="">Please Select</option>
+        <option value="1">Option 1</option>
+        <option value="2" selected="selected">Option 2</option>
         <option value="3">Option 3</option>
         <option value="4">Option 4</option>
       </select>
