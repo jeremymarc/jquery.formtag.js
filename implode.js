@@ -69,13 +69,8 @@
           html = '',
           $li;
 
-        var values = [];
-
         //todo: handle other form elements
-        $(element.element).find('option').each(function(i, option) {
-          values.push([option.innerHTML, option.value]);
-        });
-
+        var values = getSelectValues(element);
         $(values).each(function(i, el) {
           $li = $('<li></li>').html(el[0]);
           $li.attr('data-value', el[1]);
@@ -92,21 +87,18 @@
       function init() {
         var $add = $('<a></a>');
         $menu = $('<ul></ul>');
-
-        $add.html('+ Add field')
-            .addClass('btn add_field')
-        ;
+        $tags = $('<div></div>').addClass('tags');
+        $add.html('+ Add field').addClass('btn add-field');
 
         $add.on('click', function() {
           $menu.show();
         });
         $menu.hide();
         initMenu();
+        initTags();
 
         $menu.on('click', function(e) {
           var target = $(e.target);
-          ;
-
           if (target.hasClass('label')) {
             var index = $(target).data('index'),
             html = htmlValuesFromFormElement(index)
@@ -118,12 +110,43 @@
           } else {
             // update form element
             $(selectedElement.element).val(target.data('value'));
+
             initMenu();
+            initTags();
           }
         });
 
+        self.parent().append($tags);
         self.parent().append($add);
         self.parent().append($menu);
+      }
+
+      /**
+       * Generate tag links from form
+       */
+      function initTags() {
+        var $div, $a, $close;
+
+        $('.tag').remove();
+        $(elements).each(function(i, element) {
+          if ($(element.element).val() && "?" != $(element.element).val()) {
+            $div = $('<div></div>').addClass('tag');
+            $a = $('<a></a>').html(element.label + ': ' + $(element.element).val());
+            $close = $('<a></a>').addClass('close').data(element).html('x');
+            $close.one('click', function(e) {
+              var $target = $(e.target),
+                  data = $target.data()
+                ;
+
+              $(data.element).val('');
+              $target.parent().remove();
+            });
+
+            $div.append($a);
+            $div.append($close);
+            $tags.append($div);
+          }
+        });
       }
 
       /**
@@ -134,21 +157,36 @@
         $menu.hide();
 
         $(elements).each(function(i, el) {
-          $li = $('<li></li>');
-          $li.html(el.label);
-          $li.attr('data-index', i)
+          var $val = $(el.element).val();
+          if ($val.trim().length == 0 || $val == "?") {
+            $li = $('<li></li>');
+            $li.html(el.label);
+            $li.attr('data-index', i)
             .addClass('label');
 
-          $menu.append($li);
+            $menu.append($li);
+          }
         });
       }
 
       function parseSelect(element) {
-        var $label = getLabel(element),
-          $options = element.find('option')
-          ;
+        var $label = getLabel(element);
 
-          addFormElement($(element), $label.text());
+        addFormElement($(element), $label.text());
+      }
+
+      function getSelectValues(element) {
+        var options = $(element.element).find('option').filter(function(i, opt) {
+          var $val = $(opt).val();
+          return ($val.trim().length > 0 && $val != "?");
+        });
+
+        var values = [];
+        options.each(function(i, option) {
+          values.push([option.innerHTML, option.value]);
+        });
+
+        return values;
       }
 
 
