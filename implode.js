@@ -19,9 +19,13 @@
   }
 }(function ($) {
   $.fn.implode = function (options) {
+    //default options
     var defaults = {
     };
-    var elements = [];
+
+    var elements = [],
+      selectedElement,
+      $menu;
 
     options = $.extend(defaults, options);
 
@@ -37,42 +41,51 @@
         });
       }
 
-      build();
-
-      function addFormElement(element, label, values, multiple) {
+      /**
+       * Store new form element
+       * element: jQuery Selector
+       * label: the display name of the form element
+       * values: values displayed once the element is selected
+       *
+       * Support only Select
+       */
+      function addFormElement(element, label, values) {
         if ("undefined" === typeof(multiple)) {
           multiple = false;
         }
 
         console.log('Adding Form Element ' + label);
-        elements.push({label: label, values: values, multiple: multiple});
+        elements.push({element: element, label: label, values: values});
       }
 
-      function removeFormElement(label) {
-      }
-
-      function getElement(index) {
+      function getFormElement(index) {
         return elements[index];
       }
 
-      function buildHtmlFromElementIndex(index) {
-        var element = getElement(index),
+      /**
+       * Generate html from a form element values used in the menu
+       */
+      function htmlValuesFromFormElement(index) {
+        var element = getFormElement(index),
           html = '',
           $li;
 
         $(element.values).each(function(i, el) {
           $li = $('<li></li>').html(el[0]);
           $li.attr('data-value', el[1]);
+
           html += $li.wrap('<p/>').parent().html();
         });
 
         return html;
       }
 
-
-      function build() {
+      /**
+       * Init element handlers. Has to be called only once
+       */
+      function init() {
         var $add = $('<a></a>');
-        var $menu = $('<ul></ul>');
+        $menu = $('<ul></ul>');
 
         $add.html('+ Add field')
             .addClass('btn add_field')
@@ -81,6 +94,37 @@
         $add.on('click', function() {
           $menu.show();
         });
+        $menu.hide();
+        initMenu();
+
+        $menu.on('click', function(e) {
+          var target = $(e.target);
+          ;
+
+          if (target.hasClass('label')) {
+            var index = $(target).data('index'),
+            html = htmlValuesFromFormElement(index)
+            ;
+            selectedElement = getFormElement(index);
+
+            $menu.html(html);
+            $menu.attr('data-index', index);
+          } else {
+            // update form element
+            $(selectedElement.element).val(target.data('value'));
+            initMenu();
+          }
+        });
+
+        self.parent().append($add);
+        self.parent().append($menu);
+      }
+
+      /**
+       * Rebuid the menu with form labels
+       */
+      function initMenu() {
+        $menu.empty();
         $menu.hide();
 
         $(elements).each(function(i, el) {
@@ -91,28 +135,8 @@
 
           $menu.append($li);
         });
-
-        $menu.on('click', function(e) {
-          var target = $(e.target);
-
-          if (target.hasClass('label')) {
-            index = $(target).data('index'),
-            html = buildHtmlFromElementIndex(index)
-            ;
-
-            $menu.html(html);
-            $menu.attr('data-index', index);
-          } else {
-            var value = target.data('value');
-            //update form
-          }
-        });
-
-        self.parent().append($add);
-        self.parent().append($menu);
       }
 
-      //private
       function parseSelect(element) {
         var $label = getLabel(element),
           $options = element.find('option'),
@@ -123,9 +147,13 @@
             values.push([option.innerHTML, option.value]);
           });
 
-          addFormElement(element, $label.text(), values, false);
+          addFormElement($(element), $label.text(), values);
       }
 
+
+      /**
+       * Return the label element from a form element
+       */
       function getLabel(element) {
         var label = $("label[for='"+ $(element).attr('id') + "']");
 
@@ -140,6 +168,8 @@
 
         return label;
       }
+
+      init();
     });
   };
 }));
