@@ -25,7 +25,9 @@
 
     var elements = [],
       selectedElement,
-      $menu;
+      $menu,
+      order = 0
+    ;
 
     options = $.extend(defaults, options);
 
@@ -53,8 +55,7 @@
           multiple = false;
         }
 
-        console.log('Adding Form Element ' + label);
-        elements.push({element: element, label: label});
+        elements.push({element: element, label: label, order: 0});
       }
 
       function getFormElement(index) {
@@ -66,12 +67,13 @@
        */
       function htmlValuesFromFormElement(index) {
         var element = getFormElement(index),
-          html = '',
+          html = $('<li></li>').html(element.label).wrap('<p/>').parent().html(),
           $li;
 
         //todo: handle other form elements
         var values = getSelectValues(element);
-        $(values).each(function(i, el) {
+        $(values)
+        .each(function(i, el) {
           $li = $('<li></li>').html(el[0]);
           $li.attr('data-value', el[1]);
 
@@ -108,9 +110,10 @@
             $menu.html(html);
             $menu.attr('data-index', index);
           } else {
+            selectedElement.order = 1;
+
             // update form element
             $(selectedElement.element).val(target.data('value'));
-
             initMenu();
             initTags();
           }
@@ -128,7 +131,11 @@
         var $div, $a, $close;
 
         $('.tag').remove();
-        $(elements).each(function(i, element) {
+        $(elements)
+        .sort(function(a,b) {
+          return a.order > b.order ? 1 : -1;
+        })
+        .each(function(i, element) {
           if ($(element.element).val() && "?" != $(element.element).val()) {
             $div = $('<div></div>').addClass('tag');
             $a = $('<a></a>').html(element.label + ': ' + $(element.element).val());
@@ -142,7 +149,7 @@
               $target.parent().remove();
 
               initMenu();
-            });
+            });[]
 
             $div.append($a);
             $div.append($close);
@@ -158,7 +165,8 @@
         $menu.empty();
         $menu.hide();
 
-        $(elements).each(function(i, el) {
+        $(elements)
+        .each(function(i, el) {
           var $val = $(el.element).val();
           if ($val.trim().length == 0 || $val == "?") {
             $li = $('<li></li>');
@@ -178,9 +186,10 @@
       }
 
       function getSelectValues(element) {
+        var $val;
         var options = $(element.element).find('option').filter(function(i, opt) {
-          var $val = $(opt).val();
-          return ($val.trim().length > 0 && $val != "?");
+          $val = $(opt).val();
+          return $val.trim().length > 0 && $val != "?";
         });
 
         var values = [];
@@ -190,7 +199,6 @@
 
         return values;
       }
-
 
       /**
        * Return the label element from a form element
