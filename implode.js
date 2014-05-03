@@ -86,7 +86,7 @@
        */
       function init() {
         var $add = $('<a></a>');
-        $menu = $('<ul></ul>');
+        $menu = $('<ul></ul>').addClass('menu');
         $tags = $('<div></div>').addClass('tags');
         $add.html('+ Add field').addClass('btn add-field');
 
@@ -117,8 +117,8 @@
         });
 
         self.parent().append($tags);
-        self.parent().append($add);
         self.parent().append($menu);
+        self.parent().append($add);
       }
 
       /**
@@ -140,6 +140,8 @@
 
               $(data.element).val('');
               $target.parent().remove();
+
+              initMenu();
             });
 
             $div.append($a);

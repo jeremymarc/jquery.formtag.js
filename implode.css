@@ -1,9 +1,20 @@
+.menu {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 0 0 10px;
+  padding: 0;
+}
+.menu li {
+  list-style: none;
+  padding: 0;
+}
 .tags {
   display: inline-block;
+  vertical-align: top;
 }
-
 .tag {
   display: inline-block;
+  vertical-align: top;
   border: 1px solid black;
   position: relative;
   padding-right: 15px;
@@ -12,12 +23,9 @@
   padding: 0 20px 0 5px;
   margin: 0 10px 0 0;
 }
-
 .tag .close {
-  /* text-indent: 100%; */
-  /* white-space: nowrap; */
-  /* overflow: hidden; */
   display: inline-block;
+  vertical-align: top;
   position: absolute;
   right: 5px;
   top: 0;
@@ -26,7 +34,6 @@
   height: 20px;
   line-height: 20px;
 }
-
 .add-field {
   margin-left: 10px;
 }
