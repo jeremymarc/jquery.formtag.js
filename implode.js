@@ -79,6 +79,13 @@
         self.parent().append($tags);
         initMenu();
         self.parent().append($add);
+
+        $(document).click(function(e) {
+          var $target = $(e.target);
+          if (0 === $target.parents('.values').length) {
+            $('.values').hide();
+          }
+        });
       }
 
       /**
@@ -106,6 +113,8 @@
 
           $('.tag:last-child ul').show();
           $menu.hide();
+
+          return false;
         });
       }
 
@@ -154,21 +163,26 @@
               val = $target.data('value');
 
 
-          if ($(data).attr('multiple')) {
-            if ($target.is('li')) {
-              $target.find('input').trigger('click');
-              return;
-            }
+          if ($(data).is('select')) {
+            if ($(data).attr('multiple')) {
+              if ($target.is('li')) {
+                $target.find('input').trigger('click');
+                return;
+              }
 
-            val = [];
-            $(this).find('input:checked').add($target)
-            .each(function(i, e) {
-              val.push($(e).parent().attr('data-value'));
-            });
-            $(data).val(val);
-          } else {
-            $(data).val(val);
-            $(this).hide();
+              val = [];
+              $(this).find('input:checked').add($target)
+              .each(function(i, e) {
+                val.push($(e).parent().attr('data-value'));
+              });
+              $(data).val(val);
+            } else {
+              $(data).val(val);
+              $(this).hide();
+            }
+          }
+
+          if ($(data).is('input')) {
           }
 
           $(data).trigger('change');
@@ -196,9 +210,16 @@
           });
         }
 
+        if (element.is('input')) {
+          $e = $('<li></li>');
+          $e.append($(element).clone(true, true));
+          $tagMenu.append($e);
+        }
+
         $a = $('<a></a>').html(getElementTitle(element));
         $a.on('click', function(e) {
           $tagMenu.toggle();
+          return false;
         });
         $close = $('<a></a>').addClass('close').html('x');
         $close.one('click', function(e) {
@@ -237,7 +258,7 @@
       }
 
       function isFormElementValueValid(value) {
-        return value && 
+        return value &&
           "undefined" !== typeof(value) &&
           value.length > 0 && "?" != value;
       }
