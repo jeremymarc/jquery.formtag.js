@@ -1,7 +1,7 @@
 /**
- *  jQuery Implode Plugin
- *  http://github.com/jeremymarc/jquery.implode.js/
- *
+ *  jQuery Formtag Plugin
+ *  http://github.com/jeremymarc/jquery.formtag.js/
+ * 
  *  (c) 2014-2015 http://jeremymarc.github.com
  *  MIT licensed
  */
