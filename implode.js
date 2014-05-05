@@ -161,7 +161,8 @@
             }
 
             val = [];
-            $(this).find('input:checked').each(function(i, e) {
+            $(this).find('input:checked').add($target)
+            .each(function(i, e) {
               val.push($(e).parent().attr('data-value'));
             });
             $(data).val(val);
@@ -184,7 +185,11 @@
             $e.attr('data-value', el[1]);
 
             if (multiple) {
-              $e.append($('<input type="checkbox" />'));
+              $checkbox = $('<input type="checkbox" />');
+              if ($.inArray(el[1], $(element).val()) !== -1) {
+                $checkbox.attr('checked', true);
+              }
+              $e.append($checkbox);
             }
 
             $tagMenu.append($e);
@@ -203,8 +208,6 @@
 
           $(element).val('').removeClass('tagged').trigger('change');
           $target.parent().remove();
-
-          //remove handlers
         });
 
         //need to update the tag element
