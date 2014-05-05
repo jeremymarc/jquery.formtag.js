@@ -18,7 +18,7 @@
     factory(jQuery);
   }
 }(function ($) {
-  $.fn.implode = function (options) {
+  $.fn.tagform = function (options) {
     //default options
     var defaults = {
       add_button_text: '+ Add Field',
