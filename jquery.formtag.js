@@ -2,7 +2,7 @@
  *  jQuery Formtag Plugin
  *  http://github.com/jeremymarc/jquery.formtag.js/
  *
- *  (c) 2014-2015 http://jeremymarc.github.com
+ *  (c) 2014-2015 http://jeremymarc.github.com/jquery.formtag.js/
  *  MIT licensed
  */
 
