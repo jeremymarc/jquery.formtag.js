@@ -125,47 +125,46 @@
           },
 
           add: function(element) {
-
             var $div, $a, $close, $tagMenu, label, $e;
             $div = $('<div></div>').addClass('tag').data(element);
             $(element).addClass('tagged');
 
-            $tagMenu = $('<ul></ul>').addClass('values').hide();
-            $tagMenu.on('click', function(e) {
-              var $target = $(e.target),
-                  data = $target.parents('.tag').data(),
-                  val = $target.data('value');
-
-
-              if ($(data).is('select')) {
-                if ($(data).attr('multiple')) {
-                  if ($target.is('li')) {
-                    $target.find('input').trigger('click');
-                    return;
-                  }
-
-                  val = [];
-                  $(this).find('input:checked').add($target)
-                  .each(function(i, e) {
-                    val.push($(e).parent().attr('data-value'));
-                  });
-                  $(data).val(val);
-                } else {
-                  $(data).val(val);
-                  $(this).hide();
-                }
-              }
-
-              if ($(data).is('input')) {
-              }
-
-              $(data).trigger('change');
+            //need to update the tag element
+            element.change(function(e) {
+              $a.html(_.element.title(element));
             });
 
+            $tagMenu = $('<ul></ul>').addClass('values').hide();
 
             if (element.is('select')) {
+              $tagMenu.on('click', function(e) {
+                var $target = $(e.target),
+                data = $target.parents('.tag').data(),
+                val = $target.data('value');
+
+
+                if ($(data).is('select')) {
+                  if ($(data).attr('multiple')) {
+                    if ($target.is('li')) {
+                      $target.find('input').trigger('click');
+                      return;
+                    }
+
+                    val = [];
+                    $(this).find('input:checked').add($target)
+                    .each(function(i, e) {
+                      val.push($(e).parent().attr('data-value'));
+                    });
+                  } else {
+                    $(this).hide();
+                  }
+                }
+
+                $(data).val(val).trigger('change');
+              });
+
               var values = _.element.selectValues(element),
-                  multiple = ($(element).attr('multiple'));
+              multiple = ($(element).attr('multiple'));
 
               $(values)
               .each(function(i, el) {
@@ -186,7 +185,11 @@
 
             if (element.is('input')) {
               $e = $('<li></li>');
-              $e.append($(element).clone(true, true));
+              $input = $(element).clone(true, true).removeAttr('id');
+              $input.keyup(function(e) {
+                $(element).val($input.val()).trigger('change');
+              });
+              $e.append($input);
               $tagMenu.append($e);
             }
 
@@ -204,12 +207,6 @@
               $(element).val('').removeClass('tagged').trigger('change');
               $target.parent().remove();
             });
-
-            //need to update the tag element
-            element.change(function(e) {
-              $a.html(_.element.title($(this)));
-            });
-
 
             $div.append($a);
             $div.append($close);
