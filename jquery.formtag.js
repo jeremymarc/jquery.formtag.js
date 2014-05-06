@@ -43,17 +43,12 @@
 
         el.hide(); // hide form
 
-        if (_.textInputs.length > 0) {
-          _.textInputs.each(function(i, input) {
-            _.element.add($(input));
-          });
-        }
-
-        if (_.selects.length > 0) {
-          _.selects.each(function(i, select) {
-            _.element.add($(select));
-          });
-        }
+        _.textInputs.each(function(i, input) {
+          _.element.add($(input));
+        });
+        _.selects.each(function(i, select) {
+          _.element.add($(select));
+        });
 
       /**
        * Init element handlers. Has to be called only once
