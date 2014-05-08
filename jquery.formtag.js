@@ -20,7 +20,8 @@
 }(function ($) {
   var formElements = [],
       $addMenu,
-      $tags;
+      $tags,
+      $addTagLink;
 
   var tagForm = function() {
       var _ = this;
@@ -28,7 +29,7 @@
       //default options
       _.options =  {
         add_button_text: '+ Add Field',
-        add_button_class: 'btn add-field',
+        add_button_class: 'add_field',
         tag_label: '~',
         namespace: 'tagForm-',
       };
@@ -50,20 +51,19 @@
         });
 
         // Add Tag Link
-        var $addTagLink = $('<a/>');
+        $addTagLink = $('<a/>');
         $addTagLink.html(_.options.add_button_text).addClass(_.options.namespace + _.options.add_button_class);
-        $addTagLink.on('click', function() {
+        $addTagLink.click(function() {
           updateAddMenuElementsVisibility();
-          $addMenu.show();
         });
 
         // Generate tags for form elements set
         $tags = $('<div/>').addClass(_.options.namespace + 'tags');
         _.tag.init();
 
-        $form.parent().append($tags);
+        $form.after($tags);
+        $tags.after($addTagLink);
         _.initMenu($form);
-        $form.parent().append($addTagLink);
 
         // close tag menu on click
         $(document).click(function(e) {
@@ -93,13 +93,19 @@
 
           $addMenu.append($li);
         });
-        $form.parent().append($addMenu);
+        $tags.after($addMenu);
 
         $addMenu.on('click', function(e) {
           _.tag.add($(e.target).data());
 
-          $('.tag:last-child ul').show();
+          $('.' + _.options.namespace + 'tag:last-child ul').show();
           $addMenu.hide();
+
+          //all form elements are displayed
+          if (formElements.length == $tags.find('.' + _.options.namespace + 'tag').length) {
+            $addTagLink.hide();
+            return false;
+          }
 
           return false;
         });
@@ -204,6 +210,8 @@
               .trigger('change');
 
             $target.parent().remove();
+
+            $addTagLink.show();
           });
 
           $div.append($a);
@@ -289,6 +297,8 @@
         $li.show();
       }
     });
+
+    $addMenu.show();
   };
 
   function isTagShown($element) {
