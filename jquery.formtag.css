@@ -1,18 +1,18 @@
-.menu {
+.tagForm-menu {
   display: inline-block;
   vertical-align: top;
   margin: 0 0 0 10px;
   padding: 0;
 }
-.menu li {
+.tagForm-menu li {
   list-style: none;
   padding: 0;
 }
-.tags {
+.tagForm-tags {
   display: inline-block;
   vertical-align: top;
 }
-.tag {
+.tagForm-tag {
   display: inline-block;
   vertical-align: top;
   border: 1px solid black;
@@ -23,18 +23,18 @@
   padding: 0 20px 0 5px;
   margin: 0 10px 0 0;
 }
-.tag .values {
+.tagForm-tag .tagForm-values {
   margin: 0;
   padding: 0;
   position: absolute;
-  left: 0;
+  left: -1px;
   border: 1px solid black;
   width: 100%;
 }
-.tag .values li {
+.tagForm-tag .tagForm-values li {
   list-style: none;
 }
-.tag .close {
+.tagForm-tag .tagForm-close {
   display: inline-block;
   vertical-align: top;
   position: absolute;
