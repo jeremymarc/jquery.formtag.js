@@ -1,12 +1,24 @@
 .tagForm-menu {
   display: inline-block;
   vertical-align: top;
-  margin: 0 0 0 10px;
   padding: 0;
+  border: 1px solid black;
+  margin-right: 5px;
 }
 .tagForm-menu li {
   list-style: none;
   padding: 0;
+  border-top: 1px solid black;
+  padding: 0 10px;
+  cursor: pointer;
+  height: 20px;
+  line-height: 20px;
+}
+.tagForm-menu li:hover {
+  background: #dedede;
+}
+.tagForm-menu li:first-child {
+  border-top: none;
 }
 .tagForm-tags {
   display: inline-block;
@@ -22,14 +34,18 @@
   line-height: 20px;
   padding: 0 20px 0 5px;
   margin: 0 10px 0 0;
+  cursor: pointer;
 }
 .tagForm-tag .tagForm-values {
   margin: 0;
   padding: 0;
   position: absolute;
-  left: -1px;
+  left: -1px; /* border */
+  right: -1px; /* border */
   border: 1px solid black;
-  width: 100%;
+  background: #fff;
+  padding: 5px;
+  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
 }
 .tagForm-tag .tagForm-values li {
   list-style: none;
@@ -45,6 +61,8 @@
   height: 20px;
   line-height: 20px;
 }
-.add-field {
-  margin-left: 10px;
+.tagForm-add_field {
+  margin-left: 5px;
+  line-height: 22px;
+  cursor: pointer;
 }
