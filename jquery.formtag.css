@@ -1,11 +1,11 @@
-.tagForm-menu {
+.formTag-menu {
   display: inline-block;
   vertical-align: top;
   padding: 0;
   border: 1px solid black;
-  margin-right: 5px;
+  margin: 0 5px 0 0;
 }
-.tagForm-menu li {
+.formTag-menu li {
   list-style: none;
   padding: 0;
   border-top: 1px solid black;
@@ -14,17 +14,17 @@
   height: 20px;
   line-height: 20px;
 }
-.tagForm-menu li:hover {
+.formTag-menu li:hover {
   background: #dedede;
 }
-.tagForm-menu li:first-child {
+.formTag-menu li:first-child {
   border-top: none;
 }
-.tagForm-tags {
+.formTag-tags {
   display: inline-block;
   vertical-align: top;
 }
-.tagForm-tag {
+.formTag-tag {
   display: inline-block;
   vertical-align: top;
   border: 1px solid black;
@@ -36,7 +36,7 @@
   margin: 0 10px 0 0;
   cursor: pointer;
 }
-.tagForm-tag .tagForm-values {
+.formTag-tag .formTag-values {
   margin: 0;
   padding: 0;
   position: absolute;
@@ -47,14 +47,14 @@
   padding: 5px;
   -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
 }
-.tagForm-tag .tagForm-values li {
+.formTag-tag .formTag-values li {
   list-style: none;
 }
-.tagForm-tag .tagForm-values li input[type="text"] {
+.formTag-tag .formTag-values li input[type="text"] {
   width: 100%;
   -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
 }
-.tagForm-tag .tagForm-close {
+.formTag-tag .formTag-close {
   display: inline-block;
   vertical-align: top;
   position: absolute;
@@ -65,7 +65,7 @@
   height: 20px;
   line-height: 20px;
 }
-.tagForm-add_field {
+.formTag-add_field {
   margin-left: 5px;
   line-height: 22px;
   cursor: pointer;

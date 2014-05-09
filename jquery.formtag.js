@@ -23,7 +23,7 @@
       $tags,
       $addTagLink;
 
-  var tagForm = function() {
+  var formTag = function() {
       var _ = this;
 
       //default options
@@ -31,7 +31,7 @@
         add_button_text: '+ Add Field',
         add_button_class: 'add_field',
         tag_label: '~',
-        namespace: 'tagForm-',
+        namespace: 'formTag-',
       };
 
       /**
@@ -302,7 +302,7 @@
   };
 
   function isTagShown($element) {
-    return $element.hasClass('tagForm-tagged');
+    return $element.hasClass('formTag-tagged');
   }
 
   function isFormElementValueValid(value) {
@@ -318,10 +318,10 @@
     return this.each(function(index) {
       // Cache a copy of $(this)
       var me = $(this),
-        key = 'tagForm' + (len > 1 ? '-' + ++index : ''),
-        instance = (new tagForm).init(me, options);
+        key = 'formTag' + (len > 1 ? '-' + ++index : ''),
+        instance = (new formTag).init(me, options);
 
-      // Invoke an tagForm instance
+      // Invoke an formTag instance
       me.data(key, instance).data('key', key);
     });
   };
