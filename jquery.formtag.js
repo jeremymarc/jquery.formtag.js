@@ -224,7 +224,7 @@
          * Return the form element title based on the label and selected values
          */
         title: function($formElement) {
-          var label = _.tag.label($formElement).html() + ': ',
+          var label = _.tag.label($formElement).text().trim() + ': ',
               val = $formElement.val();
 
           if (isFormElementValueValid(val)) {
