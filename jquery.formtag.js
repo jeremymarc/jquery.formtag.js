@@ -312,7 +312,7 @@
       "?" != value;
   };
 
-  $.fn.tagform = function (options) {
+  $.fn.formtag = function (options) {
     var len = this.length;
 
     return this.each(function(index) {
