@@ -1,20 +1,15 @@
 {
-  "name": "implode",
-  "version": "0.1.0",
-  "authors": [
-    "Jeremy Marc <jeremy.marc@me.com>"
-  ],
-  "description": "Fold up a form into buttons",
-  "main": "implode.js",
-  "keywords": [
-    "form"
-  ],
+  "name": "jquery.formtag",
+  "version": "0.1.2",
+  "authors": ["Jeremy Marc <jeremy.marc@me.com>"],
+  "description": "Transform a form into mutliples button tag elements",
+  "main": "jquery.formtag.js",
+  "keywords": ["form", "tag"],
   "license": "MIT",
-  "homepage": "http://jeremymarc.github.com/implode",
-  "private": true,
+  "homepage": "http://jeremymarc.github.com/jquery.formtag.js",
+  "private": false,
   "ignore": [
     "**/.*",
-    "node_modules",
     "bower_components",
     "test",
     "tests"
