@@ -104,16 +104,22 @@
           $addMenu.append($li);
         });
         $addMenuWrapper.append($addMenu);
-        $tags.after($addMenuWrapper);
 
         $addMenu.on('click', function(e) {
-          _.tag.add($(e.target).data());
+          var $last;
 
-          $('.' + _.options.namespace + 'tag:last-child ul').show();
+          _.tag.add($(e.target).data());
+          $last = $wrapper.find('.' + _.options.namespace + 'tag:last');
+          $last.find('ul').show();
+
+          if ($last.find('input[type="text"]').length > 0) {
+            $last.find('input[type="text"]').focus();
+          }
+
           $addMenu.addClass(_.options.namespace + 'hidden')
 
           //all form elements are displayed
-          if (formElements.length == $tags.find('.' + _.options.namespace + 'tag').length) {
+          if (formElements.length == $wrapper.find('.' + _.options.namespace + 'tag').length) {
             $addTagLink.hide();
             return false;
           }
