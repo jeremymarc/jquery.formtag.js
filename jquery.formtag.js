@@ -29,7 +29,6 @@
       //default options
       _.options =  {
         add_button_text: '+ Add Field',
-        add_button_class: 'add_field',
         tag_label: '~',
         namespace: 'formTag-',
         delete_tag_delay: 0,
@@ -56,7 +55,7 @@
 
         // Add Tag Link
         $addTagLink = $('<a/>');
-        $addTagLink.html(_.options.add_button_text).addClass(_.options.namespace + _.options.add_button_class);
+        $addTagLink.html(_.options.add_button_text).addClass(_.options.namespace + 'add_field');
         $addTagLink.click(function() {
           updateAddMenuElementsVisibility();
           return false;
