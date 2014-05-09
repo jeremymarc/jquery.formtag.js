@@ -20,7 +20,6 @@
   var formElements = [],
       $wrapper,
       $addMenu,
-      $tags,
       $addMenuWrapper,
       $addTagLink;
 
@@ -48,12 +47,12 @@
         //  Check whether we're passing any options
         _.options = $.extend( _.options , options);
 
+        $wrapper = $('<div/>').addClass(_.options.namespace + 'wrapper');
+
         $form.hide();
         $form.find('input[type="text"], select').each(function(i, formElement) {
           formElements.push($(formElement));
         });
-
-        $wrapper = $('<div/>').addClass(_.options.namespace + 'wrapper');
 
         // Add Tag Link
         $addTagLink = $('<a/>');
@@ -63,15 +62,13 @@
           return false;
         });
 
-        // Generate tags for form elements set
-        $tags = $('<div/>').addClass(_.options.namespace + 'tags');
-        _.tag.init();
-
-
         $form.after($wrapper);
-        $wrapper.append($tags);
         _.initMenu($form);
         $addMenuWrapper.append($addTagLink);
+        $wrapper.append($addMenuWrapper);
+
+        // Generate tags for form elements set
+        _.tag.init();
 
         // close tag menu on click
         $(document).click(function(e) {
@@ -88,11 +85,12 @@
        * Build the add element menu from form labels.
        */
       _.initMenu = function($form) {
+        var val;
+
         $addMenu = $('<ul/>')
           .addClass(_.options.namespace + 'menu')
           .addClass(_.options.namespace + 'hidden');
 
-        var val;
         $addMenuWrapper = $('<div/>').addClass(_.options.namespace + 'menu-wrapper');
 
         $(formElements)
@@ -236,7 +234,7 @@
           $div.append($a);
           $div.append($close);
           $div.append($tagMenu);
-          $tags.append($div);
+          $addMenuWrapper.before($div);
           setTimeout(function() {
             $div.removeClass(_.options.namespace + 'hidden');
           }, _.options.add_tag_delay);
