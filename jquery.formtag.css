@@ -66,7 +66,10 @@
     -moz-transition: all 150ms linear;
     -o-transition: all 150ms linear;
     -ms-transition: all 150ms linear;
-    transition: all 150ms linear; }
+    transition: all 150ms linear;
+    background: #fff;
+    color: #637082;
+    font-weight: bold }
     .formTag-wrapper .formTag-tag.formTag-hidden {
       opacity: 0;
       left: -3px; }
