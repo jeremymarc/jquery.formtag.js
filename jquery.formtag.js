@@ -84,7 +84,7 @@
        * Build the add element menu from form labels.
        */
       _.initMenu = function($form) {
-        var val;
+        var val, $li;
 
         $addMenu = $('<ul/>')
           .addClass(_.options.namespace + 'menu')
