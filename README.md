@@ -5,6 +5,8 @@ Transform a form into mutliples button tag elements
 
 Check out the [jQuery Formtag website](http://jeremymarc.github.io/jquery.formtag.js/) to see what it's all about.
 
+Angular directive is also [available here](https://github.com/jeremymarc/ngFormTag)
+
 ## License
 
 The MIT License
