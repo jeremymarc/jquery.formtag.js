@@ -1,6 +1,6 @@
 {
   "name": "jquery.formtag",
-  "version": "0.2.1",
+  "version": "0.4.0",
   "authors": ["Jeremy Marc <jeremy.marc@me.com>"],
   "description": "Transform a form into mutliples button tag elements",
   "main": "jquery.formtag.js",

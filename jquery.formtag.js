@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  *  jQuery Formtag Plugin
  *  http://github.com/jeremymarc/jquery.formtag.js/
@@ -23,8 +25,9 @@
       $addMenuWrapper,
       $addTagLink;
 
-  var formTag = function() {
+  var FormTag = function() {
       var _ = this;
+      formElements = [];
 
       //default options
       _.options =  {
@@ -33,7 +36,10 @@
         namespace: 'formTag-',
         delete_tag_delay: 0,
         add_tag_delay: 0,
+        value_to_text: true,
+        max_1_opened_dropdown: true,
       };
+
 
       /**
        * Init Tag Form
@@ -57,12 +63,14 @@
         $addTagLink = $('<a/>');
         $addTagLink.html(_.options.add_button_text).addClass(_.options.namespace + 'add_field');
         $addTagLink.click(function() {
-          updateAddMenuElementsVisibility();
+          $('.' + _.options.namespace + 'values').hide(); //hide dropdown menu from other tags
+
+          _.updateAddMenuElementsVisibility();
           return false;
         });
 
         $form.after($wrapper);
-        _.initMenu($form);
+        _.initMenu();
         $addMenuWrapper.append($addTagLink);
         $wrapper.append($addMenuWrapper);
 
@@ -70,20 +78,65 @@
         _.tag.init();
 
         // close tag menu on click
-        $(document).click(function(e) {
-          if (0 === $(e.target).parents('.' + _.options.namespace + 'values').length) {
-            $('.' + _.options.namespace + 'values').hide();
+        $(document).unbind('click').click(function(e) {
+          var $target = $(e.target);
+          if (0 === $target.parents('.' + _.options.namespace + 'values').length) {
+            $('.' + _.options.namespace + 'tag').each(function() {
+              _.updateFormElementValueFromTag($(this));
+              $(this).find('.' + _.options.namespace + 'values').each(function() {
+                $(this).hide();
+              });
+            });
+          } else {
+            if ($target.hasClass(_.options.namespace + 'radio')) {
+              $target.parent().find('li.selected').removeClass('selected');
+            }
+
+            $target.toggleClass('selected');
           }
+
           $addMenu.addClass(_.options.namespace + 'hidden');
+        });
+
+
+        $(document).unbind('keypress').keypress(function(e) {
+          var $target = $(e.target),
+              $tagParent = $target.parents('.' + _.options.namespace + 'tag');
+
+          if ($tagParent.length > 0 && 13 == e.keyCode) { //ENTER
+            $target.parents('.' + _.options.namespace + 'values').hide();
+            _.updateFormElementValueFromTag($tagParent);
+          }
         });
 
         return _;
       };
 
+      _.updateFormElementValueFromTag = function($tag) {
+        var $formElement = $tag.data(), val = '';
+
+        if ($formElement.is('select')) {
+          val = [];
+          $tag.find('.selected')
+          .each(function(i, e) {
+            val.push($(e).attr('data-value'));
+          });
+        }
+
+        if ($formElement.is('input')) {
+          val = $tag.find('input[type="text"]').val();
+        }
+
+        if (val != $formElement.val()) {
+          $formElement.val(val).trigger('change');
+        }
+      };
+
+
       /**
        * Build the add element menu from form labels.
        */
-      _.initMenu = function($form) {
+      _.initMenu = function() {
         var val, $li;
 
         $addMenu = $('<ul/>')
@@ -115,7 +168,7 @@
             $last.find('input[type="text"]').focus();
           }
 
-          $addMenu.addClass(_.options.namespace + 'hidden')
+          $addMenu.addClass(_.options.namespace + 'hidden');
 
           //all form elements are displayed
           if (formElements.length == $wrapper.find('.' + _.options.namespace + 'tag').length) {
@@ -125,217 +178,248 @@
 
           return false;
         });
-      }
+      };
 
-    _.tag = {
-        /**
-         * Generate tag links from form
-         */
-        init: function () {
-          $(formElements)
-          .each(function(i, element) {
-            if (isFormElementValueValid(element.val())) {
-              _.tag.add(element);
+      _.updateAddMenuElementsVisibility = function() {
+        var val, $li, $formElement;
+
+        $addMenu.find('li')
+        .each(function(i, li) {
+          $li = $(li);
+          $formElement = $li.data();
+          val = $formElement.val();
+          $li.hide();
+
+          if (!$formElement.hasClass(_.options.namespace + 'tagged')) {
+            $li.show();
+          }
+        });
+
+        $addMenu.toggleClass(_.options.namespace + 'hidden');
+      };
+
+      _.tag = {
+          /**
+           * Generate tag links from form
+           */
+          init: function () {
+            $(formElements)
+            .each(function(i, element) {
+              if (isFormElementValueValid(element.val())) {
+                _.tag.add(element);
+              }
+            });
+          },
+
+          add: function($formElement) {
+            var $div, $a, $close, $tagMenu, $e, $input;
+
+            if ($formElement.hasClass(_.options.namespace + 'tagged')) {
+              if($formElement.val() === '') {
+                $formElement.removeClass(_.options.namespace + 'tagged');
+                return;
+              }
             }
-          });
-        },
 
-        add: function($formElement) {
-          var $div, $a, $close, $tagMenu, label, $e;
-          $div = $('<div/>')
-            .addClass(_.options.namespace + 'tag')
-            .addClass(_.options.namespace + 'hidden')
-            .data($formElement);
-          $formElement.addClass(_.options.namespace + 'tagged');
+            $div = $('<div/>')
+              .addClass(_.options.namespace + 'tag')
+              .addClass(_.options.namespace + 'hidden')
+              .data($formElement);
+            $formElement.addClass(_.options.namespace + 'tagged');
 
-          //need to update the tag element
-          $formElement.unbind('change').change(function(e) {
-            $a.html(_.tag.title($formElement));
-          });
+            //need to update the tag element
+            $formElement.unbind('change').change(function(e) {
+              $a.html(_.tag.title($formElement));
+            });
 
-          $tagMenu = $('<ul/>').addClass(_.options.namespace + 'values').hide();
+            $tagMenu = $('<ul/>').addClass(_.options.namespace + 'values').hide();
 
-          if ($formElement.is('select')) {
-            $tagMenu.on('click', function(e) {
-              var $target = $(e.target),
-                  $formElement = $target.parents('.' + _.options.namespace + 'tag').data(),
-                  val = $target.data('value');
+            if ($formElement.is('select')) {
+              $tagMenu.addClass(_.options.namespace + 'list');
+              var values = _.tag.selectValues($formElement),
+                  multiple = $formElement.attr('multiple'),
+                  formElementName = $formElement.attr('name');
 
-              if ($formElement.is('select')) {
-                if ($formElement.attr('multiple')) {
-                  if ($target.is('li')) {
-                    $target.find('input').trigger('click');
-                    return;
+              $(values)
+              .each(function(i, el) {
+                $e = $('<li/>');
+                $e.attr('data-value', el[1]),
+                $e.html(el[0]);
+
+                if (multiple) {
+                  $e.addClass(_.options.namespace + 'checkbox');
+
+                  if ($.inArray(el[1], $formElement.val()) !== -1) {
+                    $e.addClass('selected');
                   }
-
-                  val = [];
-                  $(this).find('input:checked').add($target)
-                  .each(function(i, e) {
-                    val.push($(e).parent().attr('data-value'));
-                  });
                 } else {
-                  $(this).hide();
+                  $e.addClass(_.options.namespace + 'radio');
+                  if (el[1] == $formElement.val()) {
+                    $e.addClass('selected');
+                  }
                 }
-              }
 
-              $formElement.val(val).trigger('change');
-            });
-
-            var values = _.tag.selectValues($formElement),
-                multiple = $formElement.attr('multiple');
-
-            $(values)
-            .each(function(i, el) {
-              $e = $('<li/>').html(el[0]);
-              $e.attr('data-value', el[1]);
-
-              if (multiple) {
-                $checkbox = $('<input type="checkbox" />');
-                if ($.inArray(el[1], $formElement.val()) !== -1) {
-                  $checkbox.attr('checked', true);
-                }
-                $e.append($checkbox);
-              }
-
-              $tagMenu.append($e);
-            });
-          }
-
-          if ($formElement.is('input')) {
-            $e = $('<li/>');
-            $input = $formElement.clone(true, true).removeAttr('id');
-            $input.keyup(function(e) {
-              $formElement.val($input.val()).trigger('change');
-            });
-            $e.append($input);
-            $tagMenu.append($e);
-          }
-
-          $a = $('<a/>').html(_.tag.title($formElement));
-          $a.on('click', function(e) {
-            $tagMenu.toggle();
-            return false;
-          });
-          $close = $('<a/>').addClass(_.options.namespace + 'close').html('x');
-          $close.one('click', function(e) {
-            var $target = $(e.target),
-                $formElement = $target.parent('.' + _.options.namespace + 'tag').data()
-            ;
-
-            $formElement
-              .val('')
-              .unbind('change')
-              .removeClass(_.options.namespace + 'tagged')
-              .trigger('change');
-
-            $target.parent().addClass(_.options.namespace + 'hidden');
-            setTimeout(function() {
-              $target.parent().remove();
-            }, _.options.delete_tag_delay);
-
-            $addTagLink.show();
-          });
-
-          $div.append($a);
-          $div.append($close);
-          $div.append($tagMenu);
-          $addMenuWrapper.before($div);
-          setTimeout(function() {
-            $div.removeClass(_.options.namespace + 'hidden');
-          }, _.options.add_tag_delay);
-        },
-
-        /**
-         * Return the form element title based on the label and selected values
-         */
-        title: function($formElement) {
-          var label = _.tag.label($formElement).text().trim() + ': ',
-              val = $formElement.val();
-
-          if (isFormElementValueValid(val)) {
-            label += $formElement.val();
-          } else {
-            label += _.options.tag_label;
-          }
-
-          return label;
-        },
-
-        /**
-         * Return the label element from a form element
-         */
-        label: function ($formElement) {
-          var label = $("label[for='"+ $formElement.attr('id') + "']");
-
-          if(label.length <= 0) {
-            var parentElem = $formElement.parent(),
-            parentTagName = parentElem.get(0).tagName.toLowerCase();
-
-            if(parentTagName == "label") {
-              label = parentElem;
+                $tagMenu.append($e);
+              });
             }
-          }
 
-          return label;
-        },
+            if ($formElement.is('input')) {
+              var $input = $formElement.clone(true, true).removeAttr('id');
 
-        /**
-         * Return the form element values
-         */
-        selectValues: function ($formElement) {
-          if ($formElement.is('input')) {
-            return $formElement.val();
-          }
+              $e = $('<li/>');
+              $e.append($input);
+              $tagMenu.append($e);
+            }
 
-          if ($formElement.is('select')) {
-            var $val;
-            var options = $formElement.find('option')
-            .filter(function(i, opt) {
-              $val = $(opt).val();
-              return $val.trim().length > 0 && $val != "?";
+            $a = $('<a/>').html(_.tag.title($formElement));
+            $a.on('click', function(e) {
+              var $tagMenu = $(this).parent().find('.' + _.options.namespace + 'values');
+
+              if (_.options.max_1_opened_dropdown) {
+                $('.' + _.options.namespace + 'values').not($tagMenu).hide(); //hide others tag menu
+              }
+
+              if ($tagMenu.is(':hidden')) {
+                $tagMenu.show();
+                _.updateFormElementValueFromTag($(this).parents('.' + _.options.namespace + 'tag'));
+              } else {
+                $tagMenu.hide();
+              }
+
+              return false;
+            });
+            $close = $('<a/>').addClass(_.options.namespace + 'close').html('x');
+            $close.one('click', function(e) {
+              var $target = $(e.target),
+                  $formElement = $target.parent('.' + _.options.namespace + 'tag').data()
+              ;
+
+              $formElement
+                .val('')
+                .unbind('change')
+                .removeClass(_.options.namespace + 'tagged')
+                .trigger('change');
+
+              $target.parent().addClass(_.options.namespace + 'hidden');
+              setTimeout(function() {
+                $target.parent().remove();
+              }, _.options.delete_tag_delay);
+
+              $addTagLink.show();
+
+              return false;
             });
 
-            var values = [];
-            options.each(function(i, option) {
-              values.push([option.innerHTML, option.value]);
-            });
+            $div.append($a);
+            $div.append($close);
+            $div.append($tagMenu);
+            $addMenuWrapper.before($div);
+            setTimeout(function() {
+              $div.removeClass(_.options.namespace + 'hidden');
+            }, _.options.add_tag_delay);
+          },
 
-            return values;
-          }
+          /**
+           * Return the form element title based on the label and selected values
+           */
+          title: function($formElement) {
+            var label = _.tag.label($formElement).text().trim() + ': ',
+                $span = $('<span/>'),
+                $div = $('<div />'),
+                val = $formElement.val();
 
-          throw new Error('Form element type not supported.');
-        },
-      }
-  }
+            if (isFormElementValueValid(val)) {
+              if($formElement.find("option").length > 0 && _.options.value_to_text) {
+                var $formElementArray = $formElement.find(":selected");
 
-  function updateAddMenuElementsVisibility() {
-    var $element, val, $li;
+                if($formElementArray.length < 2) {
+                  $span.html($formElementArray.text());
+                } else {
+                  for(var i = 0; i < $formElementArray.length; i++) {
+                    if(i !== 0) {
+                      $span.html($span.html() + ', ');
+                    }
 
-    $addMenu.find('li')
-    .each(function(i, li) {
-      $li = $(li);
-      $formElement = $li.data();
-      val = $formElement.val();
-      $li.hide();
+                    $span.html($span.html() + $formElementArray[i].innerHTML);
+                  }
+                }
+              } else {
+                $span.html($formElement.val());
+              }
+            } else {
+              $span.html(_.options.tag_label);
+            }
 
-      if (!isTagShown($formElement)) {
-        $li.show();
-      }
-    });
+            $div.append($span);
 
-    $addMenu.toggleClass('formTag-hidden');
-  };
+            return label + $div.html();
+          },
 
-  function isTagShown($element) {
-    return $element.hasClass('formTag-tagged');
-  }
+          /**
+           * Return the label element from a form element
+           */
+          label: function ($formElement) {
+            var label = $("label[for='"+ $formElement.attr('id') + "']");
+
+            if(label.length <= 0) {
+              var parentElem = $formElement.parent(),
+              parentTagName = parentElem.get(0).tagName.toLowerCase();
+
+              if(parentTagName == "label") {
+                label = parentElem;
+              }
+            }
+
+            return label;
+          },
+
+          /**
+           * Return the form element values
+           */
+          selectValues: function ($formElement) {
+            if ($formElement.is('input')) {
+
+              if($formElement.is(":checkbox")) {
+
+                var searchIDs = $( $formElement + ":checkbox").map(function(a, e){
+                  return this.value;
+                }).toArray();
+
+              }
+
+              return $formElement.val();
+
+            }
+
+            if ($formElement.is('select')) {
+              var $val;
+              var options = $formElement.find('option')
+              .filter(function(i, opt) {
+                $val = $(opt).val();
+                return $val.trim().length > 0 && $val != "?";
+              });
+
+              var values = [];
+              options.each(function(i, option) {
+                values.push([option.innerHTML, option.value]);
+              });
+
+              return values;
+            }
+
+            throw new Error('Form element type not supported.');
+          },
+        };
+    };
 
   function isFormElementValueValid(value) {
     return null !== value &&
       "undefined" !== typeof(value) &&
       value.length > 0 &&
-      "?" != value;
-  };
+      "?" != value &&
+      'default' != value &&
+      '' !== value;
+  }
 
   $.fn.formtag = function(options) {
     var len = this.length;
@@ -344,7 +428,7 @@
       // Cache a copy of $(this)
       var me = $(this),
         key = 'formTag' + (len > 1 ? '-' + ++index : ''),
-        instance = (new formTag).init(me, options);
+        instance = (new FormTag()).init(me, options);
 
       // Invoke an formTag instance
       me.data(key, instance).data('key', key);
