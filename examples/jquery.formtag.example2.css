@@ -22,13 +22,13 @@
     color: #c0cad7; }
 
   .formTag-wrapper .formTag-checkbox {
-    background: white url(../bundles/rjcvsearch/images/checkbox.jpg) no-repeat 0 8px;
+    background: white url(img/checkbox.jpg) no-repeat 0 8px;
     text-indent: 15px; }
   .formTag-wrapper .formTag-checkbox.selected {
   background-position: 0 -22px; }
 
   .formTag-wrapper .formTag-radio {
-    background: white url(../bundles/rjcvsearch/images/radio.jpg) no-repeat 0 8px;
+    background: white url(img/radio.jpg) no-repeat 0 8px;
     text-indent: 15px; }
   .formTag-wrapper .formTag-radio.selected {
   background-position: 0 -22px; }
@@ -89,7 +89,7 @@
       margin: 6px 10px 0 10px;
       width: 17px;
       height: 17px;
-      background: #e68700 url(../bundles/rjcvsearch/images/close.png) no-repeat 6px 6px;
+      background: #e68700 url(img/close.png) no-repeat 6px 6px;
       display: block;
       font-size: 0; }
     .formTag-wrapper .formTag-tag .formTag-close:hover {
@@ -137,7 +137,7 @@
         position: absolute;
         content: " ";
         top: -14px;
-        background: url(../bundles/rjcvsearch/images/popover-arrow.png) no-repeat;
+        background: url(img/popover-arrow.png) no-repeat;
         width: 26px;
         height: 14px;
         left: 42%; }
@@ -200,7 +200,7 @@
       position: absolute;
       content: " ";
       top: -14px;
-      background: url(../bundles/rjcvsearch/images/popover-arrow.png) no-repeat;
+      background: url(img/popover-arrow.png) no-repeat;
       width: 26px;
       height: 14px;
       left: 42%; }
