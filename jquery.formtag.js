@@ -368,6 +368,8 @@
               if(parentTagName == "label") {
                 label = parentElem;
               }
+            } else {
+              label = jQuery(label.get(0));
             }
 
             return label;
@@ -380,15 +382,12 @@
             if ($formElement.is('input')) {
 
               if($formElement.is(":checkbox")) {
-
                 var searchIDs = $( $formElement + ":checkbox").map(function(a, e){
                   return this.value;
                 }).toArray();
-
               }
 
               return $formElement.val();
-
             }
 
             if ($formElement.is('select')) {
