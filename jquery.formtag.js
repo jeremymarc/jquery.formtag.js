@@ -38,6 +38,7 @@
         add_tag_delay: 0,
         value_to_text: true,
         max_1_opened_dropdown: true,
+        close_on_click: true,
       };
 
 
@@ -81,18 +82,15 @@
         $(document).unbind('click').click(function(e) {
           var $target = $(e.target);
           if (0 === $target.parents('.' + _.options.namespace + 'values').length) {
-            $('.' + _.options.namespace + 'tag').each(function() {
-              _.updateFormElementValueFromTag($(this));
-              $(this).find('.' + _.options.namespace + 'values').each(function() {
-                $(this).hide();
-              });
-            });
+            _.hideTagAndUpdateFormElementValues();
           } else {
             if ($target.hasClass(_.options.namespace + 'radio')) {
               $target.parent().find('li.selected').removeClass('selected');
             }
-
             $target.toggleClass('selected');
+            if (_.options.close_on_click) {
+              _.hideTagAndUpdateFormElementValues();
+            }
           }
 
           $addMenu.addClass(_.options.namespace + 'hidden');
@@ -111,6 +109,15 @@
 
         return _;
       };
+
+      _.hideTagAndUpdateFormElementValues = function() {
+        $('.' + _.options.namespace + 'tag').each(function() {
+          _.updateFormElementValueFromTag($(this));
+          $(this).find('.' + _.options.namespace + 'values').each(function() {
+            $(this).hide();
+          });
+        });
+      }
 
       _.updateFormElementValueFromTag = function($tag) {
         var $formElement = $tag.data(), val = '';
