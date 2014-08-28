@@ -209,7 +209,9 @@
           /**
            * Generate tag links from form
            */
-          init: function () {
+          init: function() {
+            $('.' + _.options.namespace + 'tagged').removeClass(_.options.namespace + 'tagged');
+
             $(formElements)
             .each(function(i, element) {
               if (isFormElementValueValid(element.val())) {
