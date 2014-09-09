@@ -88,7 +88,10 @@
               $target.parent().find('li.selected').removeClass('selected');
             }
             $target.toggleClass('selected');
-            if (_.options.close_on_click) {
+
+            if (_.options.close_on_click &&
+                !($target.hasClass(_.options.namespace + 'checkbox')) && //checkboxes
+                !($target.hasClass(_.options.namespace + 'tagged') && "input" == e.target.localName)) { //input
               _.hideTagAndUpdateFormElementValues();
             }
           }
